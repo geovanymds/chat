@@ -1,31 +1,72 @@
-const User = require('../models/User');
+const User = require("../models/User");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const secret = require("../../config/jwt");
 
 exports.signup = async (req, res, next) => {
-
-  const { login, userName, email, password, likes} = req.body;
+  const { login, userName, email, password, likes } = req.body;
 
   try {
 
-    let user = await User.findOne({email});
+    let user = await User.findOne({ email });
 
-    if(!!user) {
-      const error = new Error('Usuário já cadastrado.');
+    if (!!user) {
+      const error = new Error("Usuário já cadastrado.");
       throw error;
     }
 
-    user = await User.create({login, userName, email, password, likes});
+    let hashedPassword = await bcrypt.hash(password, 12);
 
-    return (res.status(201).json({ Message: 'Usuário cadastrado com sucesso.'}));
+    user = await User.create({ login, userName, email, 'password':hashedPassword, likes });
 
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+      },
+      secret
+    );
 
+    return res
+      .status(201)
+      .json({ Message: "Usuário cadastrado com sucesso.", userName, token});
   } catch (error) {
-
-    if(!error.statusCode) {
+    if (!error.statusCode) {
       res.statusCode = 500;
       next(error);
     }
-
   }
-  
+};
 
-}
+exports.login = async (req, res, next) => {
+  const { login, password } = req.body;
+
+  try {
+
+    let user = await User.findOne({ login });
+    const unhashedPass = await bcrypt.compare(password, user.password);
+
+    if(!unhashedPass||!user) {
+      const error = new Error("Login or password incorrect.");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+      },
+      secret
+    );
+
+    return res
+      .status(200)
+      .json({ Message: "User sucefully connected.", "Usuário":user.userName, token});
+  } catch (error) {
+    if (!error.statusCode) {
+      res.statusCode = 500;
+      next(error);
+    }
+  }
+};

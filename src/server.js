@@ -1,7 +1,14 @@
 const app = require('./app');
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb+srv://geovany:THJ1KFeeAbvSuJMd@cluster0.ful8x.mongodb.net/chat?retryWrites=true&w=majority', {useNewUrlParser: true});
+mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true},(error)=>{
+    if(!error) {
+        console.log('Database sucefully connected.');
+    } else {
+        console.log(error);
+        exit(1);
+    }
+});
 
 app.listen(8080);
 
