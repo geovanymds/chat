@@ -23,6 +23,7 @@ const User = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+    select: false,
   },
 
   created_at:  {

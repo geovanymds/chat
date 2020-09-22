@@ -7,7 +7,6 @@ exports.signup = async (req, res, next) => {
   const { login, userName, email, password, likes } = req.body;
 
   try {
-
     let user = await User.findOne({ email });
 
     if (!!user) {
@@ -17,7 +16,13 @@ exports.signup = async (req, res, next) => {
 
     let hashedPassword = await bcrypt.hash(password, 12);
 
-    user = await User.create({ login, userName, email, 'password':hashedPassword, likes });
+    user = await User.create({
+      login,
+      userName,
+      email,
+      password: hashedPassword,
+      likes,
+    });
 
     const token = jwt.sign(
       {
@@ -29,7 +34,7 @@ exports.signup = async (req, res, next) => {
 
     return res
       .status(201)
-      .json({ Message: "Usuário cadastrado com sucesso.", userName, token});
+      .json({ Message: "Usuário cadastrado com sucesso.", userName, token });
   } catch (error) {
     if (!error.statusCode) {
       res.statusCode = 500;
@@ -43,10 +48,10 @@ exports.login = async (req, res, next) => {
 
   try {
 
-    let user = await User.findOne({ login });
+    let user = await User.findOne({ login }).select("+password");
     const unhashedPass = await bcrypt.compare(password, user.password);
 
-    if(!unhashedPass||!user) {
+    if (!unhashedPass || !user) {
       const error = new Error("Login or password incorrect.");
       error.statusCode = 401;
       throw error;
@@ -62,7 +67,50 @@ exports.login = async (req, res, next) => {
 
     return res
       .status(200)
-      .json({ Message: "User sucefully connected.", "Usuário":user.userName, token});
+      .json({
+        Message: "User sucefully connected.",
+        Usuário: user.userName,
+        token,
+      });
+  } catch (error) {
+    if (!error.statusCode) {
+      res.statusCode = 500;
+      next(error);
+    }
+  }
+};
+
+exports.getUser = async (req, res, next) => {
+  const { userName } = req.params;
+
+  try {
+    user = await User.findOne({ userName });
+
+    if (!!user) {
+      return res.status(200).json(user);
+    }
+
+    return res.status(404).json({ Message: "User not found." });
+
+  } catch (error) {
+    if (!error.statusCode) {
+      res.statusCode = 500;
+      next(error);
+    }
+  }
+};
+
+exports.getUsers = async (req, res, next) => {
+
+  try {
+    users = await User.find();
+
+    if (!!users) {
+      return res.status(200).json(users);
+    }
+
+    return res.status(404).json({ Message: "User not found." });
+
   } catch (error) {
     if (!error.statusCode) {
       res.statusCode = 500;

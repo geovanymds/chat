@@ -21,8 +21,8 @@ class App {
             chatRouter,
         } = routes
 
-        this.express.use('/user', userRouter);
-        this.express.use('/chat', chatRouter);
+        this.express.use('/users', userRouter);
+        this.express.use('/chats', chatRouter);
 
         this.express.use((error, req, res, next) => {
             console.log(error);
