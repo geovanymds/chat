@@ -36,13 +36,8 @@ const Chat = new mongoose.Schema({
     required: true
   },
 
-  messages: [Mensagem],
+  messages: [{ type: Schema.Types.ObjectId, ref: 'Mensagem' }],
 
-  created_at:  {
-    type: Date,
-    default: Date.now
-  }
-
-});
+}, {timestamps: true});
 
 module.exports = mongoose.model('Chat', Chat);

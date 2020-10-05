@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const mensagemSchema = new mongoose.Schema({
+const Mensagem = new mongoose.Schema({
 
     sender: {
         type: String,
@@ -16,4 +16,4 @@ const mensagemSchema = new mongoose.Schema({
 
 });
 
-module.exports = mensagemSchema;
+module.exports = mongoose.Model('Mensagem', Mensagem);

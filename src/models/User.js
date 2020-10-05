@@ -26,17 +26,12 @@ const User = new mongoose.Schema({
     select: false,
   },
 
-  created_at:  {
-    type: Date,
-    default: Date.now
-  },
-
   status: String,
 
   likes: [String],
   
-  friends: [Number]
+  friends: [{ type: Schema.Types.ObjectId, ref: 'Friendship'}]
 
-});
+}, {timestamps: true} );
 
 module.exports = mongoose.model('User', User);
