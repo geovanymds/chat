@@ -26,10 +26,10 @@ exports.create = async (req, res, next) => {
 
   } catch (error) {
 
-    if(!error.statusCode) {
-      res.statusCode = 500;
-      next(error);
+    if (!error.statusCode) {
+      error.statusCode = 500;
     }
+    next(error);
 
   }
   

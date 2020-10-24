@@ -1,7 +1,8 @@
 const app = require('./app');
 const mongoose = require('mongoose');
+const mongoOptions = require('../config/mongo');
 
-mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true},(error)=>{
+mongoose.connect(process.env.MONGO_URL, mongoOptions,(error)=>{
     if(!error) {
         console.log('Database sucefully connected.');
     } else {
@@ -11,4 +12,6 @@ mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true},(error)=>{
 });
 
 app.listen(8080);
+
+
 

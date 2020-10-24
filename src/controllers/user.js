@@ -6,15 +6,9 @@ const secret = require("../../config/jwt");
 
 exports.signup = async (req, res, next) => {
 
-  const { login, userName, email, password, likes } = req.body;
-
   try {
-    let user = await User.findOne({ email });
 
-    if (!!user) {
-      const error = new Error("Usuário já cadastrado.");
-      throw error;
-    }
+    const { login, userName, email, password, likes } = req.body;
 
     let hashedPassword = await bcrypt.hash(password, 12);
 
@@ -36,12 +30,12 @@ exports.signup = async (req, res, next) => {
 
     return res
       .status(201)
-      .json({ Message: "Usuário cadastrado com sucesso.", userName, token });
+      .json({ Message: "User sucefully registred.", id: user.id, userName, token });
   } catch (error) {
     if (!error.statusCode) {
-      res.statusCode = 500;
-      next(error);
+      error.statusCode = 500;
     }
+    next(error);
   }
 };
 
@@ -52,9 +46,16 @@ exports.login = async (req, res, next) => {
   try {
 
     let user = await User.findOne({ login }).select("+password");
+
+    if (!user) {
+      const error = new Error("Login or password incorrect.");
+      error.statusCode = 401;
+      throw error;
+    }
+
     const unhashedPass = await bcrypt.compare(password, user.password);
 
-    if (!unhashedPass || !user) {
+    if (!unhashedPass) {
       const error = new Error("Login or password incorrect.");
       error.statusCode = 401;
       throw error;
@@ -78,9 +79,9 @@ exports.login = async (req, res, next) => {
       
   } catch (error) {
     if (!error.statusCode) {
-      res.statusCode = 500;
-      next(error);
+      error.statusCode = 500;
     }
+    next(error);
   }
 };
 
@@ -99,9 +100,9 @@ exports.getUser = async (req, res, next) => {
 
   } catch (error) {
     if (!error.statusCode) {
-      res.statusCode = 500;
-      next(error);
+      error.statusCode = 500;
     }
+    next(error);
   }
 };
 
@@ -118,9 +119,9 @@ exports.getUsers = async (req, res, next) => {
 
   } catch (error) {
     if (!error.statusCode) {
-      res.statusCode = 500;
-      next(error);
+      error.statusCode = 500;
     }
+    next(error);
   }
 };
 
@@ -163,9 +164,9 @@ exports.friendshipRequest =  async (req, res, next) => {
 
   } catch(error) {
     if (!error.statusCode) {
-      res.statusCode = 500;
-      next(error);
+      error.statusCode = 500;
     }
+    next(error);
   } 
 
 }
@@ -203,9 +204,8 @@ exports.friendshipResponse =  async (req, res, next) => {
 
   } catch(error) {
     if (!error.statusCode) {
-      res.statusCode = 500;
-      next(error);
+      error.statusCode = 500;
     }
+    next(error);
   } 
-
 }
