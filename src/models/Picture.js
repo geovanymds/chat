@@ -11,4 +11,10 @@ const Picture = new mongoose.Schema({
   }
 });
 
+Picture.pre('save', function() {
+  if (!this.url){
+    this.url = `${process.env.APP_URL}/files/${this.fullname}`;
+  }
+});
+
 module.exports = mongoose.model("Picture", Picture);

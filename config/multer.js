@@ -12,8 +12,8 @@ const storageTypes = {
     filename: (req, file, cb) => {
       crypto.randomBytes(16, (err, hash) => {
         if(err) {cb(err);}
-        file.key = `${hash.toString('hex')}-${file.originalname}`;
-        cb(null, file.key);
+        file.fullname = `${hash.toString('hex')}-${file.originalname}`;
+        cb(null, file.fullname);
       });
     },
   }),
@@ -23,7 +23,7 @@ const storageTypes = {
     bucket:  'pictures-upload-chatredes',
     contentType: multerS3.AUTO_CONTENT_TYPE,
     acl: 'public-read',
-    key: (req, file, cb) => {
+    fullname: (req, file, cb) => {
       crypto.randomBytes(16, (err, hash) => {
         if(err) {cb(err);}
         const filename = `${hash.toString('hex')}-${file.originalname}`;
@@ -35,7 +35,7 @@ const storageTypes = {
 
 module.exports = {
   dest: path.resolve(__dirname, '..', 'temp', 'uploads'),
-  storage: storageTypes["s3"],
+  storage: storageTypes["local"],
 
   limits:{
     fileSize: 2 * 1024 * 1024,
