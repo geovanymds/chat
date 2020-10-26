@@ -3,7 +3,7 @@ const User = require('../models/User');
 
 exports.create = async (req, res, next) => {
 
-  const { name, loginAdm, description, tags, isPrivate, password } = req.body;
+  const { name, admin, description, tags, isPrivate, password } = req.body;
 
   try {
 
@@ -12,14 +12,16 @@ exports.create = async (req, res, next) => {
       throw error;
     }
 
-    user = await User.findOne({'login': loginAdm});
+    const user = await User.findOne({'login': admin});
+
+    const mAdmin = { login: user.login, userName: user.userName};
 
     if(!user) {
       const error = new Error('Usuário não encontrado.');
       throw error;
     }
 
-    chat = await Chat.create({name, 'admin': user, description, tags, isPrivate, password, 'members': user });
+    const chat = await Chat.create({name, 'admin':mAdmin, description, tags, isPrivate, password, 'members': [mAdmin] });
 
     return (res.status(201).json({ Message: 'Chat criado.'}));
 
