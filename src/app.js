@@ -3,6 +3,7 @@ const express = require('express');
 const routes = require('./routes/index');
 const cors = require('cors');
 const headers = require('./middlewares/headers');
+const morgan = require('morgan');
 
 class App {
 
@@ -16,6 +17,8 @@ class App {
         this.express.use(cors());
         this.express.use(express.json());
         this.express.use(headers);
+        this.express.use(express.urlencoded({ extended: true}));
+        this.express.use(morgan('dev'));
     }
 
     routes() {
@@ -23,10 +26,12 @@ class App {
         const {
             userRouter,
             chatRouter,
+            pictureRouter,
         } = routes
 
         this.express.use('/users', userRouter);
         this.express.use('/chats', chatRouter);
+        this.express.use('/picture', pictureRouter);
 
         this.express.use((req, res, next) => {
 			res.status(404).json({ message: 'Route not found' });
