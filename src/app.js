@@ -4,6 +4,7 @@ const routes = require('./routes/index');
 const cors = require('cors');
 const headers = require('./middlewares/headers');
 const morgan = require('morgan');
+const path = require('path');
 
 class App {
 
@@ -19,6 +20,7 @@ class App {
         this.express.use(headers);
         this.express.use(express.urlencoded({ extended: true}));
         this.express.use(morgan('dev'));
+        this.express.use('/files', express.static(path.resolve(__dirname, '..', 'temp', 'uploads')))
     }
 
     routes() {
