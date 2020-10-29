@@ -2,7 +2,34 @@ const mongoose = require('mongoose');
 const Mensagem = require('./Mensagem');
 const User = require('./User');
 
+const UserSchema = new mongoose.Schema({
+
+  avatarUrl: {
+    type: String
+  },
+
+  login: {
+    type: String,
+    required: true,
+  },
+
+  userName: {
+    type: String,
+    required: true,
+  },
+
+  email: {
+    type: String,
+    required: true,
+  },
+
+});
+
 const Chat = new mongoose.Schema({
+
+  avatarUrl: {
+    type: String
+  },
 
   name: {
     type: String,
@@ -10,7 +37,7 @@ const Chat = new mongoose.Schema({
   },
 
   admin: {
-    type: User.schema,
+    type: UserSchema,
     required: true,
   },
 
@@ -31,7 +58,7 @@ const Chat = new mongoose.Schema({
   },
   
   members: {
-    type: [User.schema],
+    type: [UserSchema],
     required: true
   },
 

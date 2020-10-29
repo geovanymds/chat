@@ -3,6 +3,10 @@ const { Schema } = require('mongoose');
 
 const User = new mongoose.Schema({
 
+  avatarUrl: {
+    type: String
+  },
+
   login: {
     type: String,
     required: true,
