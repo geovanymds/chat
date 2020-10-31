@@ -124,11 +124,11 @@ exports.getUsers = async (req, res, next) => {
 };
 
 exports.friendshipRequest = async (req, res, next) => {
-  const { requesterLogin, recipientUserName } = req.body;
+  const { requesterLogin, recipientId } = req.body;
 
   try {
     const requester = await User.findOne({ login: requesterLogin });
-    const recipient = await User.findOne({ userName: recipientUserName });
+    const recipient = await User.findOne({ '_id': recipientId });
 
     if (!receiver) {
       const error = new Error("User not found.");
@@ -167,9 +167,8 @@ exports.friendshipRequest = async (req, res, next) => {
 };
 
 exports.friendshipResponse = async (req, res, next) => {
-  const recipientId = req.query.recipientId;
-  const requesterId = req.query.requesterId;
-  const accepted = req.query.accepted;
+
+  const { recipientId, requesterId, accepted} = req.body;
 
   try {
     const requester = await User.findById({ requesterId });

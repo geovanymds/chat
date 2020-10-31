@@ -8,6 +8,6 @@ router.post('/login', userController.login);
 router.get('/:login', userController.getUser);
 router.get('/', userController.getUsers);
 router.post('/friendshipReq', userController.friendshipRequest);
-router.post('/friendshipRes/', userController.friendshipResponse);
+router.post('/friendshipRes', userController.friendshipResponse);
 
 module.exports = router;

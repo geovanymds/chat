@@ -12,7 +12,7 @@ const Mensagem = new mongoose.Schema({
         default: Date.now
     },
 
-    conteudo: String
+    content: String
 
 });
 
