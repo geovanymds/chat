@@ -64,6 +64,11 @@ const Chat = new mongoose.Schema({
 
   messages: [Mensagem.schema],
 
+  totalMessages: {
+    type: Number,
+    default: 0
+  }
+
 }, {timestamps: true});
 
 module.exports = mongoose.model('Chat', Chat);

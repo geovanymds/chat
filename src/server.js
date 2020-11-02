@@ -18,13 +18,11 @@ mongoose.connect(process.env.MONGO_URL, mongoOptions,(error)=>{
 
 io.sockets.on('connection', function(socket) {
 
-    console.log("User connected.");
-
     socket.on("enter", (data) => {
 
         data.forEach((chat) => {
             socket.join(chat._id);
-            console.log("Socket - chat Id ",chat._id);
+            console.log(io.sockets);
         });
 
     });
