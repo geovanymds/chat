@@ -1,55 +1,73 @@
-const mongoose = require("mongoose");
-const Mensagem = require("./Mensagem");
-const User = require("./User");
+const mongoose = require('mongoose');
+const Mensagem = require('./Mensagem');
+const User = require('./User');
 
-const Chat = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-    },
-  
-    admin: {
-      login: String,
-      userName: String,
-      unique: false
-    },
+const UserSchema = new mongoose.Schema({
 
-    description: {
-      type: String,
-      required: true,
-    },
-
-    tags: {
-      type: [String],
-      required: true,
-    },
-
-    isPrivate: Boolean,
-
-    password: {
-      type: String,
-    },
-
-    members: {
-      type: [
-        {
-          login: {
-            type: String,
-            required: true,
-          },
-          userName: {
-            type: String,
-            required: true,
-          },
-        },
-      ],
-      required: true,
-    },
-
-    messages: [Mensagem.schema],
+  avatarUrl: {
+    type: String
   },
-  { timestamps: true }
-);
 
-module.exports = mongoose.model("Chat", Chat);
+  login: {
+    type: String,
+    required: true,
+  },
+
+  userName: {
+    type: String,
+    required: true,
+  },
+
+  email: {
+    type: String,
+    required: true,
+  },
+
+});
+
+const Chat = new mongoose.Schema({
+
+  avatarUrl: {
+    type: String
+  },
+
+  name: {
+    type: String,
+    required: true
+  },
+
+  admin: {
+    type: UserSchema,
+    required: true,
+  },
+
+  description: {
+    type: String,
+    required: true,
+  },
+
+  tags: {
+    type: [String],
+    required: true
+  },
+
+  isPrivate: Boolean,
+
+  password: {
+    type: String,
+  },
+  
+  members: {
+    type: [UserSchema],
+    required: true
+  },
+  messages: [Mensagem.schema],
+
+  totalMessages: {
+    type: Number,
+    default: 0
+  }
+
+});
+
+module.exports = mongoose.model('Chat', Chat);

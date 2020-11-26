@@ -5,9 +5,9 @@ const userValidation = require('../helper/userValidation');
 
 router.post('/signup', userValidation, userController.signup);
 router.post('/login', userController.login);
-router.get('/:userName', userController.getUser);
+router.get('/:login', userController.getUser);
 router.get('/', userController.getUsers);
 router.post('/friendshipReq', userController.friendshipRequest);
-router.post('/friendshipRes/', userController.friendshipResponse);
+router.post('/friendshipRes', userController.friendshipResponse);
 
 module.exports = router;

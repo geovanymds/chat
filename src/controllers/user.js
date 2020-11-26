@@ -6,11 +6,12 @@ const secret = require("../../config/jwt");
 
 exports.signup = async (req, res, next) => {
   try {
-    const { login, userName, email, password, likes } = req.body;
+    const { avatarUrl, login, userName, email, password, likes } = req.body;
 
     let hashedPassword = await bcrypt.hash(password, 12);
 
     user = await User.create({
+      avatarUrl,
       login,
       userName,
       email,
@@ -30,9 +31,10 @@ exports.signup = async (req, res, next) => {
       .status(201)
       .json({
         Message: "User sucefully registred.",
-        login: user.login,
+        id: user._id,
         user: user.userName,
         token,
+        login: user.login,
       });
   } catch (error) {
     if (!error.statusCode) {
@@ -72,11 +74,11 @@ exports.login = async (req, res, next) => {
 
     return res.status(200).json({
       Message: "User sucefully connected.",
-      login: user.login,
+      id: user._id,
       user: user.userName,
       token,
+      login: user.login,
     });
-    
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;
@@ -86,10 +88,10 @@ exports.login = async (req, res, next) => {
 };
 
 exports.getUser = async (req, res, next) => {
-  const { userName } = req.params;
+  const { login } = req.params;
 
   try {
-    user = await User.findOne({ userName });
+    user = await User.findOne({ login });
 
     if (!!user) {
       return res.status(200).json(user);
@@ -122,11 +124,11 @@ exports.getUsers = async (req, res, next) => {
 };
 
 exports.friendshipRequest = async (req, res, next) => {
-  const { requesterLogin, recipientUserName } = req.body;
+  const { requesterLogin, recipientId } = req.body;
 
   try {
     const requester = await User.findOne({ login: requesterLogin });
-    const recipient = await User.findOne({ userName: recipientUserName });
+    const recipient = await User.findOne({ '_id': recipientId });
 
     if (!receiver) {
       const error = new Error("User not found.");
@@ -165,9 +167,8 @@ exports.friendshipRequest = async (req, res, next) => {
 };
 
 exports.friendshipResponse = async (req, res, next) => {
-  const recipientId = req.query.recipientId;
-  const requesterId = req.query.requesterId;
-  const accepted = req.query.accepted;
+
+  const { recipientId, requesterId, accepted} = req.body;
 
   try {
     const requester = await User.findById({ requesterId });
