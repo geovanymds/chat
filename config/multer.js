@@ -20,7 +20,7 @@ const storageTypes = {
 
   s3: multerS3({
     s3: new aws.S3(),
-    bucket:  'pictures-upload-chatredes',
+    bucket:  'chat-redes',
     contentType: multerS3.AUTO_CONTENT_TYPE,
     acl: 'public-read',
     fullname: (req, file, cb) => {
@@ -35,7 +35,7 @@ const storageTypes = {
 
 module.exports = {
   dest: path.resolve(__dirname, '..', 'temp', 'uploads'),
-  storage: storageTypes["local"],
+  storage: storageTypes["s3"],
 
   limits:{
     fileSize: 2 * 1024 * 1024,
